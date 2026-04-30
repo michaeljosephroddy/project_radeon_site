@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SoberSpace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    :root {
+      --bg: #111820;
+      --bg-deep: #0b1016;
+      --surface: #18212b;
+      --surface-soft: #202a35;
+      --text: #f7f9fc;
+      --muted: #a7b3c1;
+      --quiet: #738093;
+      --line: rgba(255,255,255,0.1);
+      --line-strong: rgba(255,255,255,0.16);
+      --blue: #1877f2;
+      --blue-soft: rgba(24,119,242,0.16);
+      --green: #25b981;
+      --green-soft: rgba(37,185,129,0.14);
+      --amber: #e7b85a;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+    a { color: inherit; }
+    img { max-width: 100%; }
+    button, input { font: inherit; }
+
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 30;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(18px, 5vw, 70px);
+      background: rgba(17,24,32,0.84);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: var(--blue);
+      color: #fff;
+    }
+    .brand-word span:last-child { color: var(--blue); }
+    .nav-links { display: flex; align-items: center; gap: 18px; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links .pill-link {
+      color: #fff;
+      background: var(--blue);
+      border-radius: 999px;
+      padding: 9px 15px;
+    }
+
+    .section {
+      position: relative;
+      padding: clamp(70px, 9vw, 120px) clamp(18px, 5vw, 70px);
+    }
+    .container { width: min(1160px, 100%); margin: 0 auto; }
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 112px;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 68px 0 auto;
+      height: 54%;
+      background:
+        linear-gradient(115deg, rgba(24,119,242,0.2), transparent 48%),
+        linear-gradient(245deg, rgba(37,185,129,0.16), transparent 48%);
+      pointer-events: none;
+    }
+    .hero-grid {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(430px, 640px);
+      gap: clamp(28px, 5vw, 70px);
+      align-items: center;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #a9d1ff;
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--green);
+    }
+    h1, h2, h3, p { margin: 0; }
+    h1 {
+      max-width: 720px;
+      font-size: clamp(42px, 5.8vw, 72px);
+      line-height: 0.95;
+      letter-spacing: 0;
+      font-weight: 800;
+    }
+    .hero-copy {
+      max-width: 610px;
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: clamp(18px, 2vw, 21px);
+    }
+    .hero-note {
+      margin-top: 18px;
+      color: var(--quiet);
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+    .button {
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 12px 20px;
+      text-decoration: none;
+      border: 1px solid var(--line-strong);
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .button.primary { background: var(--blue); border-color: var(--blue); color: #fff; }
+    .button.secondary { background: rgba(255,255,255,0.045); color: var(--text); }
+
+    .hero-phones {
+      position: relative;
+      min-height: 800px;
+      display: grid;
+      place-items: center;
+    }
+    .phone-wrap {
+      position: absolute;
+      filter: drop-shadow(0 30px 64px rgba(0,0,0,0.44));
+    }
+    .phone-wrap.main { z-index: 3; transform: translateY(0); }
+    .phone-wrap.side-left { z-index: 2; transform: translate(-164px, 50px) scale(0.82) rotate(-8deg); opacity: 0.86; }
+    .phone-wrap.side-right { z-index: 1; transform: translate(174px, -24px) scale(0.8) rotate(8deg); opacity: 0.82; }
+    .phone-device {
+      width: var(--phone-width);
+      padding: 9px;
+      border-radius: 36px;
+      background: linear-gradient(145deg, #05070a, #151a21);
+      border: 1px solid rgba(255,255,255,0.14);
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.06),
+        inset 0 -10px 24px rgba(255,255,255,0.035);
+      position: relative;
+    }
+    .phone-device::before,
+    .phone-device::after {
+      content: "";
+      position: absolute;
+      width: 3px;
+      border-radius: 999px;
+      background: #06080b;
+      right: -4px;
+    }
+    .phone-device::before { top: 118px; height: 48px; }
+    .phone-device::after { top: 184px; height: 72px; }
+    .phone-display {
+      aspect-ratio: 9 / 20;
+      border-radius: 27px;
+      overflow: hidden;
+      background: #1b2028;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+    }
+    .phone-display img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    h2 {
+      font-size: clamp(34px, 4.6vw, 58px);
+      line-height: 1;
+      letter-spacing: 0;
+      font-weight: 800;
+    }
+    .section-copy {
+      max-width: 620px;
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .screens-header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 28px;
+      margin-bottom: 36px;
+    }
+    .screens-header p {
+      max-width: 520px;
+      color: var(--muted);
+      font-size: 16px;
+    }
+    .screen-list {
+      display: grid;
+      gap: 0;
+      border-top: 1px solid var(--line);
+    }
+    .screen-row {
+      display: grid;
+      grid-template-columns: minmax(0, 0.88fr) 430px;
+      gap: clamp(18px, 3vw, 42px);
+      align-items: center;
+      min-height: 720px;
+      padding: clamp(42px, 7vw, 92px) 0;
+      border-bottom: 1px solid var(--line);
+      overflow: hidden;
+    }
+    .screen-row:nth-child(even) {
+      grid-template-columns: 430px minmax(0, 0.88fr);
+    }
+    .screen-row:nth-child(even) .screen-phone { grid-column: 1; grid-row: 1; }
+    .screen-row:nth-child(even) .screen-text { grid-column: 2; grid-row: 1; justify-self: start; }
+    .screen-row:nth-child(odd) .screen-text { justify-self: end; }
+    .screen-row:nth-child(odd) .screen-phone { justify-content: flex-start; }
+    .screen-row:nth-child(even) .screen-phone { justify-content: flex-end; }
+    .screen-phone {
+      display: flex;
+      justify-content: center;
+      min-height: 690px;
+      position: relative;
+    }
+    .screen-phone .phone-wrap { position: relative; }
+    .screen-text {
+      max-width: 600px;
+    }
+    .screen-label {
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    .screen-text h3 {
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.03;
+      letter-spacing: 0;
+    }
+    .screen-text p {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 18px;
+      max-width: 560px;
+    }
+    .screen-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 22px;
+    }
+    .screen-meta span {
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      color: #d9e7f8;
+      background: rgba(255,255,255,0.045);
+      padding: 7px 10px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .waitlist {
+      background:
+        linear-gradient(135deg, rgba(24,119,242,0.18), rgba(37,185,129,0.1)),
+        var(--bg-deep);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .waitlist-box {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 460px);
+      gap: clamp(28px, 6vw, 70px);
+      align-items: center;
+    }
+    .waitlist-card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(17,24,32,0.72);
+      padding: clamp(20px, 4vw, 34px);
+    }
+    .form {
+      display: flex;
+      gap: 10px;
+      margin-top: 22px;
+    }
+    .form input {
+      flex: 1;
+      min-width: 0;
+      height: 50px;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      padding: 0 17px;
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      outline: none;
+    }
+    .form input::placeholder { color: var(--quiet); }
+    .form button {
+      height: 50px;
+      border: 0;
+      border-radius: 999px;
+      padding: 0 18px;
+      color: #fff;
+      background: var(--blue);
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .success {
+      margin-top: 22px;
+      border: 1px solid rgba(37,185,129,0.4);
+      background: var(--green-soft);
+      color: #a6f0d0;
+      border-radius: 12px;
+      padding: 15px;
+      font-weight: 700;
+    }
+
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      padding: 34px clamp(18px, 5vw, 70px);
+      color: var(--quiet);
+      font-size: 14px;
+    }
+    .footer-links { display: flex; gap: 18px; flex-wrap: wrap; }
+    .footer a { color: var(--quiet); text-decoration: none; font-weight: 700; }
+
+    @media (max-width: 960px) {
+      .hero-grid, .waitlist-box { grid-template-columns: 1fr; }
+      .hero { min-height: auto; }
+      .hero-phones { min-height: 720px; }
+      .screen-row, .screen-row:nth-child(even) {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+      .screen-row:nth-child(even) .screen-phone,
+      .screen-row:nth-child(even) .screen-text {
+        grid-column: auto;
+        grid-row: auto;
+        justify-self: stretch;
+      }
+      .screen-phone { min-height: 650px; }
+      .screens-header { display: block; }
+      .screens-header p { margin-top: 12px; }
+    }
+    @media (max-width: 640px) {
+      .nav { height: 64px; }
+      .nav-links a:not(.pill-link) { display: none; }
+      .hero { padding-top: 96px; }
+      h1 { font-size: clamp(44px, 13vw, 58px); }
+      .hero-phones { min-height: 545px; transform: scale(0.68); transform-origin: top center; margin-bottom: -148px; }
+      .screen-row { padding: 46px 0; }
+      .screen-phone { min-height: 575px; transform: scale(0.76); transform-origin: top center; margin-bottom: -138px; }
+      .form { flex-direction: column; }
+      .footer { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState } = React;
+
+const screens = [
+  {
+    src: 'uploads/Screenshot_20260430-134803_SoberSpace.jpg',
+    label: 'Community',
+    title: 'Community feed',
+    body: 'Post an update, see what others are sharing, and stay part of the conversation with comments, reactions, and shares.',
+    points: ['Posts', 'Comments', 'Reactions'],
+    alt: 'SoberSpace community feed screen',
+  },
+  {
+    src: 'uploads/Screenshot_20260430-134747_SoberSpace.jpg',
+    label: 'Discover',
+    title: 'People discovery',
+    body: 'Find people in the community through suggested profiles, simple search, and advanced filters.',
+    points: ['Profiles', 'Search', 'Badges'],
+    alt: 'SoberSpace discover screen',
+  },
+  {
+    src: 'uploads/Screenshot_20260430-134659_SoberSpace.jpg',
+    label: 'Support',
+    title: 'Support requests',
+    body: 'When someone asks for support, the feed shows the request, its urgency, and clear ways to reply or offer help.',
+    points: ['Requests', 'Urgency', 'Replies'],
+    alt: 'SoberSpace support feed screen',
+  },
+  {
+    src: 'uploads/Screenshot_20260430-134640_SoberSpace.jpg',
+    label: 'Meetups',
+    title: 'Meetups',
+    body: 'Browse sober meetups with photos, categories, times, distance, and host details before deciding what to attend.',
+    points: ['Events', 'Categories', 'Distance'],
+    alt: 'SoberSpace meetups screen',
+  },
+  {
+    src: 'uploads/Screenshot_20260430-134723_SoberSpace.jpg',
+    label: 'Meetings',
+    title: 'Meeting listings',
+    body: 'Search recovery meetings and quickly check the location, schedule, format, and tags for each listing.',
+    points: ['Meetings', 'Location', 'Times'],
+    alt: 'SoberSpace meetings screen',
+  },
+  {
+    src: 'uploads/Screenshot_20260430-134403_SoberSpace.jpg',
+    label: 'Chats',
+    title: 'Chats',
+    body: 'Keep recent conversations close, see unread messages, and search your chats when you want to reconnect.',
+    points: ['Messages', 'Search', 'Unread'],
+    alt: 'SoberSpace chats screen',
+  },
+];
+
+function Brand() {
+  return (
+    <a className="brand" href="#top" aria-label="SoberSpace home">
+      <span className="brand-mark">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21.2l7.8-7.7 1-1.1a5.5 5.5 0 0 0 0-7.8Z" />
+        </svg>
+      </span>
+      <span className="brand-word"><span>Sober</span><span>Space</span></span>
+    </a>
+  );
+}
+
+function Phone({ screen, width = 292, className = '' }) {
+  return (
+    <div className={`phone-wrap ${className}`}>
+      <div className="phone-device" style={{ '--phone-width': `${width}px` }}>
+        <div className="phone-display">
+          <img src={screen.src} alt={screen.alt} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function WaitlistForm() {
+  const [email, setEmail] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const submit = (event) => {
+    event.preventDefault();
+    if (email.trim()) setSubmitted(true);
+  };
+
+  if (submitted) {
+    return <div className="success">Thanks. You're on the waitlist.</div>;
+  }
+
+  return (
+    <form className="form" onSubmit={submit}>
+      <input
+        type="email"
+        value={email}
+        onChange={(event) => setEmail(event.target.value)}
+        placeholder="Email address"
+        required
+      />
+      <button type="submit">Join waitlist</button>
+    </form>
+  );
+}
+
+function App() {
+  return (
+    <>
+      <nav className="nav">
+        <Brand />
+        <div className="nav-links">
+          <a href="#screens">Screens</a>
+          <a href="#waitlist" className="pill-link">Waitlist</a>
+        </div>
+      </nav>
+
+      <main>
+        <section id="top" className="section hero">
+          <div className="container hero-grid">
+            <div>
+              <div className="eyebrow">SoberSpace mobile app</div>
+              <h1>Recovery community, in one app.</h1>
+              <p className="hero-copy">
+                SoberSpace brings together community, people discovery, peer-support, meetups, meeting listings and chat for people in recovery.
+              </p>
+              <p className="hero-note">Currently shown as an Android app experience.</p>
+              <div className="actions">
+                <a className="button primary" href="#waitlist">Join the waitlist</a>
+                <a className="button secondary" href="#screens">View screens</a>
+              </div>
+            </div>
+            <div className="hero-phones" aria-label="SoberSpace app previews">
+              <Phone screen={screens[0]} width={237} className="side-left" />
+              <Phone screen={screens[1]} width={309} className="main" />
+              <Phone screen={screens[2]} width={237} className="side-right" />
+            </div>
+          </div>
+        </section>
+
+        <section id="screens" className="section">
+          <div className="container">
+            <div className="screen-list">
+              {screens.map((screen) => (
+                <article className="screen-row" key={screen.src}>
+                  <div className="screen-text">
+                    <div className="screen-label">{screen.label}</div>
+                    <h3>{screen.title}</h3>
+                    <p>{screen.body}</p>
+                    <div className="screen-meta">
+                      {screen.points.map((point) => <span key={point}>{point}</span>)}
+                    </div>
+                  </div>
+                  <div className="screen-phone">
+                    <Phone screen={screen} width={366} />
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="waitlist" className="section waitlist">
+          <div className="container waitlist-box">
+            <div>
+              <div className="eyebrow">Waitlist</div>
+              <h2>Join the SoberSpace waitlist.</h2>
+              <p className="section-copy">
+                Leave your email to get SoberSpace updates.
+              </p>
+            </div>
+            <div className="waitlist-card">
+              <h3>Stay in the loop</h3>
+              <p className="section-copy" style={{ fontSize: 15, marginTop: 8 }}>
+                Join the waitlist and we will keep you posted.
+              </p>
+              <WaitlistForm />
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer className="footer">
+        <Brand />
+        <div className="footer-links">
+          <a href="#screens">Screens</a>
+          <a href="#waitlist">Waitlist</a>
+        </div>
+      </footer>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
