@@ -158,7 +158,7 @@
       font-size: 14px;
       font-weight: 600;
     }
-    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; position: relative; z-index: 5; }
     .button {
       min-height: 48px;
       display: inline-flex;
@@ -407,7 +407,7 @@
       .nav-links a:not(.pill-link) { display: none; }
       .hero { padding-top: 96px; }
       h1 { font-size: clamp(44px, 13vw, 58px); }
-      .hero-phones { min-height: 545px; transform: scale(0.68); transform-origin: top center; margin-bottom: -148px; }
+      .hero-phones { min-height: 545px; margin-top: 72px; transform: scale(0.68); transform-origin: top center; margin-bottom: -148px; }
       .screen-row { padding: 46px 0; }
       .screen-phone { min-height: 575px; transform: scale(0.76); transform-origin: top center; margin-bottom: -138px; }
       .form { flex-direction: column; }
