@@ -7,6 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="uploads/soberspace_icon.png" />
+  <link rel="apple-touch-icon" href="uploads/soberspace_icon.png" />
   <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
@@ -70,10 +72,9 @@
       width: 32px;
       height: 32px;
       border-radius: 10px;
-      display: grid;
-      place-items: center;
-      background: var(--blue);
-      color: #fff;
+      display: block;
+      object-fit: cover;
+      background: #07080b;
     }
     .brand-word span:last-child { color: var(--blue); }
     .nav-links { display: flex; align-items: center; gap: 18px; }
@@ -151,13 +152,7 @@
       color: var(--muted);
       font-size: clamp(18px, 2vw, 21px);
     }
-    .hero-note {
-      margin-top: 18px;
-      color: var(--quiet);
-      font-size: 14px;
-      font-weight: 600;
-    }
-    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; position: relative; z-index: 5; }
     .button {
       min-height: 48px;
       display: inline-flex;
@@ -235,18 +230,6 @@
       font-size: 18px;
     }
 
-    .screens-header {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: 28px;
-      margin-bottom: 36px;
-    }
-    .screens-header p {
-      max-width: 520px;
-      color: var(--muted);
-      font-size: 16px;
-    }
     .screen-list {
       display: grid;
       gap: 0;
@@ -398,16 +381,23 @@
         justify-self: stretch;
       }
       .screen-phone { min-height: 650px; }
-      .screens-header { display: block; }
-      .screens-header p { margin-top: 12px; }
     }
     @media (max-width: 640px) {
       .nav { height: 64px; }
       .nav-links a:not(.pill-link) { display: none; }
       .hero { padding-top: 96px; }
       h1 { font-size: clamp(44px, 13vw, 58px); }
-      .hero-phones { min-height: 545px; transform: scale(0.68); transform-origin: top center; margin-bottom: -148px; }
-      .screen-row { padding: 46px 0; }
+      .hero-phones { min-height: 545px; margin-top: 58px; transform: scale(0.68); transform-origin: top center; margin-bottom: -148px; }
+      .screen-row { padding: 46px 0; overflow: visible; }
+      .screen-text,
+      .screen-row:nth-child(odd) .screen-text,
+      .screen-row:nth-child(even) .screen-text {
+        width: 100%;
+        max-width: none;
+        min-width: 0;
+        justify-self: stretch;
+      }
+      .screen-text p { max-width: 100%; }
       .screen-phone { min-height: 575px; transform: scale(0.76); transform-origin: top center; margin-bottom: -138px; }
       .form { flex-direction: column; }
       .footer { align-items: flex-start; flex-direction: column; }
@@ -425,7 +415,7 @@ const screens = [
     src: 'uploads/Screenshot_20260430-134803_SoberSpace.jpg',
     label: 'Community',
     title: 'Community feed',
-    body: 'Post an update, see what others are sharing, and stay part of the conversation with comments, reactions, and shares.',
+    body: 'Share your progress, stay connected to others, and feel part of a community that understands the recovery journey.',
     points: ['Posts', 'Comments', 'Reactions'],
     alt: 'SoberSpace community feed screen',
   },
@@ -433,15 +423,15 @@ const screens = [
     src: 'uploads/Screenshot_20260430-134747_SoberSpace.jpg',
     label: 'Discover',
     title: 'People discovery',
-    body: 'Find people in the community through suggested profiles, simple search, and advanced filters.',
-    points: ['Profiles', 'Search', 'Badges'],
+    body: 'Find people with shared experiences, build new connections, and grow your recovery circle with more intention.',
+    points: ['Profiles', 'Search', 'Filters'],
     alt: 'SoberSpace discover screen',
   },
   {
     src: 'uploads/Screenshot_20260430-134659_SoberSpace.jpg',
     label: 'Support',
     title: 'Support requests',
-    body: 'When someone asks for support, the feed shows the request, its urgency, and clear ways to reply or offer help.',
+    body: 'Reach out when you need support, or show up for someone else when they need help.',
     points: ['Requests', 'Urgency', 'Replies'],
     alt: 'SoberSpace support feed screen',
   },
@@ -449,7 +439,7 @@ const screens = [
     src: 'uploads/Screenshot_20260430-134640_SoberSpace.jpg',
     label: 'Meetups',
     title: 'Meetups',
-    body: 'Browse sober meetups with photos, categories, times, distance, and host details before deciding what to attend.',
+    body: 'Discover sober meetups near you, make real plans, and spend more time with people who get it.',
     points: ['Events', 'Categories', 'Distance'],
     alt: 'SoberSpace meetups screen',
   },
@@ -457,7 +447,7 @@ const screens = [
     src: 'uploads/Screenshot_20260430-134723_SoberSpace.jpg',
     label: 'Meetings',
     title: 'Meeting listings',
-    body: 'Search recovery meetings and quickly check the location, schedule, format, and tags for each listing.',
+    body: 'Browse a global curated list of recovery meetings and find options that fit your schedule, location, and needs.',
     points: ['Meetings', 'Location', 'Times'],
     alt: 'SoberSpace meetings screen',
   },
@@ -465,7 +455,7 @@ const screens = [
     src: 'uploads/Screenshot_20260430-134403_SoberSpace.jpg',
     label: 'Chats',
     title: 'Chats',
-    body: 'Keep recent conversations close, see unread messages, and search your chats when you want to reconnect.',
+    body: 'Keep meaningful conversations going, check in privately, and stay close to the people who support you.',
     points: ['Messages', 'Search', 'Unread'],
     alt: 'SoberSpace chats screen',
   },
@@ -474,11 +464,7 @@ const screens = [
 function Brand() {
   return (
     <a className="brand" href="#top" aria-label="SoberSpace home">
-      <span className="brand-mark">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21.2l7.8-7.7 1-1.1a5.5 5.5 0 0 0 0-7.8Z" />
-        </svg>
-      </span>
+      <img className="brand-mark" src="uploads/soberspace_icon.png" alt="" aria-hidden="true" />
       <span className="brand-word"><span>Sober</span><span>Space</span></span>
     </a>
   );
@@ -538,20 +524,19 @@ function App() {
           <div className="container hero-grid">
             <div>
               <div className="eyebrow">SoberSpace mobile app</div>
-              <h1>Recovery community, in one app.</h1>
+              <h1>Stay connected in recovery.</h1>
               <p className="hero-copy">
-                SoberSpace brings together community, people discovery, peer-support, meetups, meeting listings and chat for people in recovery.
+                SoberSpace is a recovery community where people can connect with others, find support, discover meetings and meetups, and keep in touch through chat.
               </p>
-              <p className="hero-note">Currently shown as an Android app experience.</p>
               <div className="actions">
                 <a className="button primary" href="#waitlist">Join the waitlist</a>
                 <a className="button secondary" href="#screens">View screens</a>
               </div>
             </div>
             <div className="hero-phones" aria-label="SoberSpace app previews">
-              <Phone screen={screens[0]} width={237} className="side-left" />
-              <Phone screen={screens[1]} width={309} className="main" />
-              <Phone screen={screens[2]} width={237} className="side-right" />
+              <Phone screen={screens[0]} width={249} className="side-left" />
+              <Phone screen={screens[1]} width={324} className="main" />
+              <Phone screen={screens[2]} width={249} className="side-right" />
             </div>
           </div>
         </section>
@@ -590,7 +575,7 @@ function App() {
             <div className="waitlist-card">
               <h3>Stay in the loop</h3>
               <p className="section-copy" style={{ fontSize: 15, marginTop: 8 }}>
-                Join the waitlist and we will keep you posted.
+                Join the waitlist and we'll keep you posted.
               </p>
               <WaitlistForm />
             </div>
