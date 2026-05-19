@@ -216,8 +216,8 @@
     .phone-device::before { top: 118px; height: 48px; }
     .phone-device::after { top: 184px; height: 72px; }
     .phone-display {
-      aspect-ratio: 9 / 20;
-      border-radius: 27px;
+      aspect-ratio: 6 / 13;
+      border-radius: 25px;
       overflow: hidden;
       background: var(--surface);
       box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
@@ -329,6 +329,7 @@
     }
     .form {
       display: flex;
+      flex-wrap: wrap;
       gap: 10px;
       margin-top: 22px;
     }
@@ -354,6 +355,21 @@
       font-weight: 800;
       cursor: pointer;
       white-space: nowrap;
+    }
+    .form button:disabled,
+    .form input:disabled {
+      cursor: not-allowed;
+      opacity: 0.72;
+    }
+    .form-hidden {
+      display: none;
+    }
+    .form-message {
+      flex-basis: 100%;
+      margin: 0;
+      color: var(--danger);
+      font-size: 14px;
+      font-weight: 700;
     }
     .success {
       margin-top: 22px;
@@ -423,6 +439,7 @@
 
 <script type="text/babel">
 const { useState } = React;
+const WAITLIST_ENDPOINT = 'https://formspree.io/f/mdajaedq';
 
 const screens = [
   {
@@ -506,26 +523,61 @@ function Phone({ screen, width = 292, className = '' }) {
 
 function WaitlistForm() {
   const [email, setEmail] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-  const submit = (event) => {
+  const [status, setStatus] = useState('idle');
+  const [error, setError] = useState('');
+
+  const submit = async (event) => {
     event.preventDefault();
-    if (email.trim()) setSubmitted(true);
+    const form = event.currentTarget;
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (!normalizedEmail) return;
+
+    setStatus('submitting');
+    setError('');
+
+    try {
+      const formData = new FormData(form);
+      formData.set('email', normalizedEmail);
+
+      const response = await fetch(WAITLIST_ENDPOINT, {
+        method: 'POST',
+        body: formData,
+        headers: { Accept: 'application/json' },
+      });
+
+      if (!response.ok) {
+        throw new Error('Waitlist submission failed');
+      }
+
+      setStatus('success');
+    } catch {
+      setStatus('error');
+      setError('Could not join the waitlist. Please try again.');
+    }
   };
 
-  if (submitted) {
+  if (status === 'success') {
     return <div className="success">Thanks. You're on the waitlist.</div>;
   }
 
   return (
-    <form className="form" onSubmit={submit}>
+    <form className="form" action={WAITLIST_ENDPOINT} method="POST" onSubmit={submit}>
       <input
         type="email"
+        name="email"
         value={email}
         onChange={(event) => setEmail(event.target.value)}
         placeholder="Email address"
+        disabled={status === 'submitting'}
         required
       />
-      <button type="submit">Join waitlist</button>
+      <input className="form-hidden" type="text" name="_gotcha" tabIndex="-1" autoComplete="off" />
+      <input type="hidden" name="source" value="soberspace_landing_page" />
+      <button type="submit" disabled={status === 'submitting'}>
+        {status === 'submitting' ? 'Joining...' : 'Join waitlist'}
+      </button>
+      {error ? <p className="form-message">{error}</p> : null}
     </form>
   );
 }
