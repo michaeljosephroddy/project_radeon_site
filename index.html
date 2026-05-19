@@ -224,8 +224,8 @@
     }
     .phone-display img {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
+      height: calc(100% - var(--screen-bottom-inset, 0px));
+      object-fit: fill;
       display: block;
     }
 
@@ -443,58 +443,59 @@ const WAITLIST_ENDPOINT = 'https://formspree.io/f/mdajaedq';
 
 const screens = [
   {
-    src: 'uploads/soberspace-feed-20260519.jpg?v=20260519-p',
+    src: 'uploads/soberspace-feed-20260519.jpg?v=20260519-ag',
     label: 'Feed',
     title: 'Recovery feed',
-    body: 'Share your progress, stay connected to others, and feel part of a community that understands the recovery journey.',
+    body: 'See recent posts from the community and join the conversation when you want to.',
     points: ['Posts', 'Comments', 'Reactions'],
     alt: 'SoberSpace feed screen',
   },
   {
-    src: 'uploads/soberspace-discover-people-20260519.jpg?v=20260519-p',
+    src: 'uploads/soberspace-discover-people-20260519.jpg?v=20260519-ag',
     label: 'Discover',
     title: 'People discovery',
-    body: 'Find people with shared experiences, build new connections, and grow your recovery circle with more intention.',
+    body: 'Look for people by interests, location, or what kind of support they are open to.',
     points: ['Profiles', 'Search', 'Filters'],
     alt: 'SoberSpace people discovery screen',
   },
   {
-    src: 'uploads/soberspace-profile-20260519.jpg?v=20260519-p',
+    src: 'uploads/soberspace-profile-20260519.jpg?v=20260519-ag',
     label: 'Profile',
     title: 'Your profile',
-    body: 'Keep your sober time, interests, and posts in one place so people know how to connect with you.',
+    body: 'Keep your posts, sober time, interests, and profile details in one place.',
     points: ['Milestones', 'Interests', 'Posts'],
     alt: 'SoberSpace profile screen',
+    bottomInset: 12,
   },
   {
-    src: 'uploads/soberspace-community-groups-20260519.jpg?v=20260519-p',
+    src: 'uploads/soberspace-community-groups-20260519.jpg?v=20260519-ag',
     label: 'Community',
     title: 'Groups',
-    body: 'Find groups for daily check-ins, local support, and the parts of recovery you care about most.',
+    body: 'Use groups for check-ins, support requests, local spaces, or shared interests.',
     points: ['Groups', 'Support', 'Joined'],
     alt: 'SoberSpace community groups screen',
   },
   {
-    src: 'uploads/soberspace-community-meetups-20260519.jpg?v=20260519-p',
+    src: 'uploads/soberspace-community-meetups-20260519.jpg?v=20260519-ag',
     label: 'Meetups',
     title: 'Meetups',
-    body: 'Discover sober meetups near you, make real plans, and spend more time with people who get it.',
+    body: 'Find sober events, coffee meetups, walks, and other plans nearby.',
     points: ['Events', 'Categories', 'Distance'],
     alt: 'SoberSpace community meetups screen',
   },
   {
-    src: 'uploads/soberspace-meetings-20260519.jpg?v=20260519-p',
+    src: 'uploads/soberspace-meetings-20260519.jpg?v=20260519-ag',
     label: 'Meetings',
     title: 'Meeting listings',
-    body: 'Browse a global curated list of recovery meetings and find options that fit your schedule, location, and needs.',
+    body: 'Search for recovery meetings by location, time, format, or fellowship.',
     points: ['Meetings', 'Location', 'Times'],
     alt: 'SoberSpace meetings screen',
   },
   {
-    src: 'uploads/soberspace-chats-20260519.jpg?v=20260519-p',
+    src: 'uploads/soberspace-chats-20260519.jpg?v=20260519-ag',
     label: 'Chats',
     title: 'Chats',
-    body: 'Keep meaningful conversations going, check in privately, and stay close to the people who support you.',
+    body: 'Keep track of private chats, support replies, and unread messages.',
     points: ['Messages', 'Search', 'Unread'],
     alt: 'SoberSpace chats screen',
   },
@@ -514,7 +515,7 @@ function Phone({ screen, width = 292, className = '' }) {
     <div className={`phone-wrap ${className}`}>
       <div className="phone-device" style={{ '--phone-width': `${width}px` }}>
         <div className="phone-display">
-          <img src={screen.src} alt={screen.alt} />
+          <img src={screen.src} alt={screen.alt} style={{ '--screen-bottom-inset': `${screen.bottomInset || 0}px` }} />
         </div>
       </div>
     </div>
@@ -553,12 +554,12 @@ function WaitlistForm() {
       setStatus('success');
     } catch {
       setStatus('error');
-      setError('Could not join the waitlist. Please try again.');
+      setError('Could not join the waitlist right now. Please try again in a minute.');
     }
   };
 
   if (status === 'success') {
-    return <div className="success">Thanks. You're on the waitlist.</div>;
+    return <div className="success">Thanks. You're on the waitlist. We will reach out to you when the app is released.</div>;
   }
 
   return (
